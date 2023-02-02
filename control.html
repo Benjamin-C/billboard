@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+  
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content
+        ="width=device-width, initial-scale=1.0">
+    <title>Billboard Control</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.1/jquery.min.js"></script>
+    <script src="control.js"></script>
+    <script>
+        window.onload = (event) =>{
+            console.log('Page Loaded');
+            attachFormSubmitEvent("myForm");
+        };
+        let hidableEmements = "preset color text slideguide slideshow slideshowtime message adminmsg newsecret confirmsecret";
+    </script>
+</head>
+  
+<body>
+    <h1>Billboard Controls</h1>
+    <!--  sending post request to "mssg" with 
+        the message from the textarea -->
+    <form id="myForm" action="mssg" method="post">
+        <!-- <textarea name="message" id="" cols="30" rows="1"></textarea> -->
+        
+        
+        <div class="tooltip"><label for="secret">Secret</label>
+        <span class="tooltiptext">Your secret key you use to authenticate yourself</span></div></td>
+        <input type="password", name="secret" id="secret" cols="30" rows="1"></textarea>
+        <input type="checkbox" onclick="myFunction('secret')"><div class="tooltip">&#128065<span class="tooltiptext">Show/hide the password</span></div>
+        <br/>Control mode:<br/>
+        <input type="radio" id="mode_preset" name="mode" value="preset" checked onclick="setMode('preset')">
+        <label for="mode_preset">Presets</label>
+        <input type="radio" id="mode_manual" name="mode" value="manual" onclick="setMode('color text')">
+        <label for="mode_manual">Manual</label>
+        <input type="radio" id="mode_slideshow" name="mode" value="slideshow" onclick="setMode('slideshow slideguide slideshowtime')">
+        <label for="mode_slideshow">Slideshow</label>
+        <input type="radio" id="mode_tests" name="mode" value="tests" onclick="setMode('message')">
+        <label for="mode_tests">Tests</label>
+        <input type="radio" id="mode_admin" name="mode" value="admin" onclick="setMode('adminmsg newsecret confirmsecret')">
+        <label for="mode_tests">Admin</label>
+
+        <table>
+            <tr id="preset_tt">
+                <td><div class="tooltip"><label for="preset">Preset</label>
+                <span class="tooltiptext">The name of the preset to use</span></div></td>
+                <!-- <td><textarea name="preset" id="preset" cols="32" rows="1"></textarea></td> -->
+                <td><select id="preset" name="preset">
+                        <option value="open">open</option>
+                        <option value="closed">closed</option>
+                        <option value="undef">undef</option>
+                        <option value="ben">ben</option>
+                    </select>
+                    <button type="button" onclick="updatePresetList()"><div class="tooltip">Update<span class="tooltiptext">Updates the list of presets</span></div></button>
+                </td>
+            </tr>
+            <tr id="color_tt" hidden>
+                <td><div class="tooltip"><label for="color">Color</label>
+                    <span class="tooltiptext">The color of the background. Only used if preset is not specified.</span></div></td>
+                <td><textarea name="color" id="color" cols="32" rows="1"></textarea></td>
+            </tr>
+            <tr id="text_tt" hidden>
+                <td><div class="tooltip"><label for="text">Text</label>
+                    <span class="tooltiptext">The text to show. Only used if preset is not specified.</span></div></td>
+                <td><textarea name="text" id="text" cols="32" rows="1"></textarea></td>
+            </tr>
+            <tr id="message_tt" hidden>
+                <td><div class="tooltip"><label for="message">Echo</label>
+                    <span class="tooltiptext">Prints this text back to you here. Only done if nothing else is specified.</span></div></td>
+                <td><textarea name="message" id="message" cols="32" rows="1"></textarea></td>
+            </tr>
+            <tr id="slideguide_tt" hidden>
+                <td colspan="2">
+                    The url can be found in Google Slides under File > Share > Publish > Embed<br/>
+                    The url will be in the form https://docs.google.com/presentation/&ltstuff&gt/embed
+                </td>
+            </tr>
+            <tr id="slideshow_tt" hidden>
+                <td><div class="tooltip"><label for="slideshow">Slideshow URL</label>
+                    <span class="tooltiptext">The embed URL for the slideshow</span></div></td>
+                <td><textarea name="slideshow" id="slideshow" cols="32" rows="1"></textarea></td>
+            </tr>
+            <tr id="slideshowtime_tt" hidden>
+                <td><div class="tooltip"><label for="slideshowtime">Slide Time</label>
+                    <span class="tooltiptext">How long each slide will be visible for before moving to the next one</span></div></td>
+                <td><textarea name="slideshowtime" id="slideshowtime" cols="32" rows="1"></textarea></td>
+            </tr>
+            <tr id="adminmsg_tt" hidden>
+                <td colspan="2">
+                    Important: This secret may not be kept completely securely.<br/>
+                    DO NOT use the same secret as you use for other secure locations.<br/>
+                    Your secret must be at least 8 characters, and should (but is not<br/>
+                    required to) contain letters, numbers, and symbols.<br/>
+                </td>
+            </tr>
+            <tr id="newsecret_tt" hidden>
+                <td><div class="tooltip"><label for="newsecret">New Secret</label>
+                    <span class="tooltiptext">The new secret you would like to use</span></div></td>
+                <td><textarea name="newsecret" id="newsecret" cols="32" rows="1"></textarea></td>
+            </tr>
+            <tr id="confirmsecret_tt" hidden>
+                <td><div class="tooltip"><label for="confirmsecret">Confirm new secret</label>
+                    <span class="tooltiptext">The new secret again to confirm it</span></div></td>
+                <td><textarea name="confirmsecret" id="confirmsecret" cols="32" rows="1"></textarea></td>
+            </tr>
+        </table>
+        <button type="submit">Send</button>
+        <input type="reset">
+        <button type="button" onclick="requestReload()"><div class="tooltip">Reload<span class="tooltiptext">Reload all connected billboards</span></div></button>
+    </form>
+</body>
+  
+</html>
