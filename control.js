@@ -6,6 +6,9 @@ function formReset(event) {
     event.preventDefault()
 }
 
+let commandURL = location.href;
+commandURL = commandURL.substring(0, commandURL.lastIndexOf("/")) + "/command";
+
 function updatePresetList() {
     // const select = document.querySelector('select'); 
     let queryData = {
@@ -13,7 +16,7 @@ function updatePresetList() {
         mode: "getpresets"
     }
     $.ajax({
-        url: '/command',
+        url: commandURL,
         type: 'post',
         data: queryData,
         success: function(data){
@@ -39,7 +42,7 @@ function requestReload() {
         reload: "true"
     }
     $.ajax({
-        url: '/command',
+        url: commandURL,
         type: 'post',
         data: reloadData,
         success: function(text){
@@ -54,7 +57,7 @@ function requestReload() {
 }
 function formSubmit(event) {
     $.ajax({
-        url: '/command',
+        url: commandURL,
         type: 'post',
         data: $('#myForm').serialize(),
         success: function(text){

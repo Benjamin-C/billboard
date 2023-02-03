@@ -83,7 +83,10 @@ function doHTTPQuery() {
             }
         }
     }
-    xmlHttp.open("GET", "query" + ((first) ? "?first" : ""), true); // true for asynchronous 
+
+    let commandURL = location.href;
+    commandURL = commandURL.substring(0, commandURL.lastIndexOf("/")) + "/query";
+    xmlHttp.open("GET", commandURL + ((first) ? "?first" : ""), true); // true for asynchronous 
     first = false
     xmlHttp.send(null);
 }
