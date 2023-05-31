@@ -11,7 +11,7 @@ if(useHTTPS) {
     var http = require("http")
 }
 // The port to host the server on
-const port = 3000;
+const port = 4433;
 
 // Express for handling GET and POST request
 const express = require("express");
@@ -23,8 +23,8 @@ const fs = require("fs");
 // Load key and certificate for SSL
 if(useHTTPS) {
     var options = {
-        key: fs.readFileSync("server_ben.key"),
-        cert: fs.readFileSync("server_ben.cert"),
+        key: fs.readFileSync("server.key"),
+        cert: fs.readFileSync("server.cert"),
     };
 }
 
@@ -37,7 +37,7 @@ app.use(bodyParser.json());
 // The current secret's hash
 let mySecretHash = "";
 fs.readFile(__dirname + "/secret.txt", 'utf8', function(err, data){
-    mySecretHash = data;
+    mySecretHash = data.replace(/\W/g, '');
     console.log("Loaded secret hash");
 });
 
@@ -62,9 +62,12 @@ function returnFile(res, name, type) {
 }
 
 // Returns some text as the the response to an HTTP request 
-function returnText(res, text) {
+function returnText(res, text, code) {
+    if(code === undefined) {
+		code = 200;
+    }
     res.setHeader("Content-Type", "text/plain");
-    res.writeHead(200);
+    res.writeHead(code);
     res.end(text);
 }
 
@@ -110,9 +113,11 @@ app.post("/command", function (req, res) {
     console.log(req.body);
 
     // Check if the request is authorized
-    if(hashSecret(secret) !== mySecretHash) {
-        returnText(res, "Unauthorized");
-        if(req.body.mode == "admin") {
+	console.log("Mine:   \"" + mySecretHash + "\"");
+	console.log("Theirs: \"" + hashSecret(secret) + "\"");
+    if(hashSecret(secret) != mySecretHash) {
+        returnText(res, "Unauthorized", 403);
+		if(req.body.mode == "admin") {
             // If we were trying to do a secret change, log the hash of the attempted new secret
             // which can be placed into secret.txt to set the secret to that at the next boot
             console.log("An unauthorized attempt was made to change the secret");
@@ -120,8 +125,10 @@ app.post("/command", function (req, res) {
                 console.log("The hash of the attempted new secret is");
                 console.log(hashSecret(newsecret))
             }
+        } else {
+        	console.log("An unauthorized login attempt was made");
         }
-        return;
+		return;
     }
 
     // Handle billboard reload requests
@@ -138,11 +145,17 @@ app.post("/command", function (req, res) {
         switch(req.body.mode) {
         case "preset": { // Load an existing preset
             let pst = presets.get(req.body.preset)
-            if(pst !== undefined) {
+			console.log(presets)
+			console.log(presets.get("closed"))
+			console.log(pst)
+			console.log(req.body.preset)
+			if(pst !== undefined) {
                 updateStatus(pst);
                 sendUpdate();
+                console.log("Set preset \"" + req.body.preset + "\"");
                 returnText(res, "Set preset \"" + req.body.preset + "\"");
             } else {
+                console.log("Invalid preset \"" + req.body.preset + "\"");
                 returnText(res, "Invalid preset \"" + req.body.preset + "\"");
             }
         } break;
@@ -159,7 +172,9 @@ app.post("/command", function (req, res) {
                 status.color = req.body.color;
                 updatedColor = true;
             }
+			console.log(status);
             sendUpdate();
+            console.log("Updated " + ((updatedText) ? "text " : "") + ((updatedText && updatedColor) ? "and " : "") + ((updatedColor) ? "color" : ""));
             returnText(res, "Updated " + ((updatedText) ? "text " : "") + ((updatedText && updatedColor) ? "and " : "") + ((updatedColor) ? "color" : ""));
         } break;
         case "slideshow": {
@@ -223,8 +238,11 @@ app.post("/command", function (req, res) {
 });
 
 // console.log(JSON.stringify(Object.fromEntries(value)))
-let presets = new Map(Object.entries(JSON.parse(fs.readFileSync("presets.json"))))
-let status = presets.get("undef")
+let presetJSON = JSON.parse(fs.readFileSync("presets.json"))
+let firstPreset = presetJSON.default;
+delete presetJSON.default;
+let presets = new Map(Object.entries(presetJSON))
+let status =  { ...presets.get(firstPreset) }
   
 // Creating https server by passing options and app object
 if(useHTTPS) {
@@ -250,6 +268,7 @@ function updateStatus(newStatus) {
     if(newStatus.time !== undefined) {
         status.time = newStatus.time;
     }
+	console.log(status);
 }
 
 // Send updates to all clients

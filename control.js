@@ -19,20 +19,25 @@ function updatePresetList() {
         url: commandURL,
         type: 'post',
         data: queryData,
-        success: function(data){
-            console.log(data);
-            const select = document.querySelector('preset');
-            let selected =  $('#preset :selected').text();
-            $("#preset").empty();
-            console.log($('#preset').val)
-            data.forEach((name) => {
-                $('#preset').append("<option value=\"" + name + "\">" + name + "</option>");
-                if(name == selected) {
-                    $("#preset").val(name);
-                }
-                console.log(name);
-            });
-        }
+	}).always(function(data, msgtext, xhr){
+   		if(data.status === undefined && xhr.status == 200) {
+			const select = document.querySelector('preset');
+        	let selected =  $('#preset :selected').text();
+        	$("#preset").empty();
+        	console.log($('#preset').val)
+        	data.forEach((name) => {
+            	$('#preset').append("<option value=\"" + name + "\">" + name + "</option>");
+            	if(name == selected) {
+                	$("#preset").val(name);
+            	}
+            	console.log(name);
+			});
+		} else {
+			console.log(data)
+			console.log(msgtext)
+			console.log(xhr)
+			alert("Unauthorized");        
+		}
     });
 }
 

@@ -1,0 +1,6 @@
+{
+    "open":   {"text":"Open",         "color":"green",   "time":30, "url":"https://docs.google.com/presentation/d/e/2PACX-1vQW-Lm85oecExAQiwELQTzh71xCnSUP7uxgSFhEyeLz2HX_fx_imgwClatnkDhIAhqJ5lp9FDqyk_xM/embed"},
+    "closed": {"text":"Closed",       "color":"red",     "time":30, "url":"https://docs.google.com/presentation/d/e/2PACX-1vQW-Lm85oecExAQiwELQTzh71xCnSUP7uxgSFhEyeLz2HX_fx_imgwClatnkDhIAhqJ5lp9FDqyk_xM/embed"},
+    "undef":  {"text":"!~UNDEF~!",    "color":"#FF00FF", "time":30, "url":"https://docs.google.com/presentation/d/e/2PACX-1vQ9yOuBvTmc0JmyN0m4A1GRRQ38xv9QRt4YBzkZ4A2Cf4jIrMA4BKdK1G46PyHlIycLuI8Oj5X9BjEh/embed"},
+    "ben":    {"text":"IT'S BEN TIME","color":"#FF8000", "time":30, "url":"https://docs.google.com/presentation/d/e/2PACX-1vRXEEfeSrUidZR-xxEpXm7AYHfp8Awu0TzHZZ_qARIUPM_9k6FoPEJS6-KNS1ZqIoBjp9eHn-uerEoi/embed"}
+}
